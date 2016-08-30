@@ -1,0 +1,5 @@
+---
+
+- file: path=/foo state=directory
+
+- file: path=/bar state=directory

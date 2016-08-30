@@ -1,0 +1,50 @@
+---
+# - name: Pre pre check
+#   hosts: localhost
+#   connection: local
+#   tasks:
+#     - name: ensure image doesn't already exist
+#       command: docker inspect {{ created_image_name }}:{{ created_image_version_tag }}
+#       register: command_result
+#       failed_when: command_result.stderr is not defined
+
+- name: Prepare build container for ansible
+  hosts: localhost
+  connection: local
+  tasks:
+    - include: docker-image-build-pre.yml
+
+- name: Apply the role inside the container
+  hosts: built-by-ansible
+  connection: docker
+  roles:
+    - { role: "{{ role_inside_container }}" }
+
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: ensure image doesn't already exist
+      command: docker inspect {{ created_image_name }}:{{ created_image_version_tag }}
+      # repository=destination_registry
+      # if repository is unspecifed assumes localhost which could be dangerous with a central reposity and multiple empty build servers
+      ignore_errors: true
+      # ignore errors because "Error: No such image, container or task" is actually our pass condition...
+      register: image_state
+      changed_when: False
+    #- debug: var=image_state.failed
+
+    - name: create a docker image from the container
+      command: "docker commit --change {{ dockerfile_cmd | quote }} --change {{ dockerfile_entrypoint | quote }} --change {{ dockerfile_env | quote }} --change {{ dockerfile_expose | quote }} --change {{ dockerfile_label | quote }} --change {{ dockerfile_onbuild | quote }} --change {{ dockerfile_user | quote }} --change {{ dockerfile_volume | quote }} --change {{ dockerfile_workdir | quote }} built-by-ansible {{ created_image_name }}:{{ created_image_version_tag }}"
+      when: image_state.failed is defined
+      # Check for when: image:tag doesn't already exist.
+      # Using latest(or null) or a previously used image:tag causes the previous image of the same name to <none>:<none>
+
+# TODO:
+# - name: push image to repository
+#   command: docker push {{ destination_registry }}/{{ created_image_name }}:{{ created_image_version_tag }}
+
+- name: post build tasks
+  hosts: localhost
+  connection: local
+  tasks:
+    - include: docker-image-build-post.yml

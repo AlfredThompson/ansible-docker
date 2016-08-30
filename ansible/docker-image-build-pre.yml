@@ -1,0 +1,14 @@
+---
+
+- name: Create build container
+  docker_container:
+    image: python:2.7.12
+    # FROM python because base container needs only python to talk to ansible
+    name: built-by-ansible
+    hostname: built-by-ansible
+    keep_volumes: false
+    #command: sleep infinity
+    command: sh -c "while true; do sleep 1; done"
+    # going back to pre docker 1.5 methods and using an infinite blocking commands...
+
+- add_host: groups=built-by-ansible name=built-by-ansible ansible_connection=docker become=false remote_user=root

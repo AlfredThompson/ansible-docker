@@ -1,0 +1,23 @@
+---
+- name: Download Docker
+  get_url:
+    url: https://get.docker.com
+    dest: "/tmp/getdocker.sh"
+    mode: 0744
+
+- name: Install Docker
+  shell: /tmp/getdocker.sh
+  args:
+    creates: /usr/bin/docker
+
+- name: Update apt-cache
+  apt: update-cache=yes
+
+- name: Install pip
+  apt: name=python-pip state=present
+
+- name: Install ansible docker_* module dependencies
+  pip: name={{ item }} state=present
+  with_items:
+    - docker-py
+    - docker-compose

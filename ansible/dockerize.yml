@@ -1,0 +1,6 @@
+- name: Dockerize me cap'n
+  #command: ansible-playbook -i localhost, /src/ansible/docker-image-build.yml --extra-vars "role_inside_container={{ item.role_inside_container }} created_image_name={{ item.created_image_name }} created_image_version_tag={{ item.created_image_version_tag }}"
+  command: ansible-playbook -i localhost, /src/ansible/docker-image-build.yml --extra-vars "{{ item | to_yaml }}"
+  with_items:
+    - "{{ dockerize }}"
+  #because with items is not a valid attribute for a play

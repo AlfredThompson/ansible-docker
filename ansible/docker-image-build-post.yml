@@ -1,0 +1,8 @@
+---
+
+- name: remove the temporary build container now that we are done
+  docker_container:
+    name: built-by-ansible
+    state: absent
+    force_kill: true
+    stop_signal: SIGINT

@@ -1,0 +1,79 @@
+
+role_inside_container: foo
+
+created_image_name: foo
+created_image_version_tag: v10
+
+# destination_registry: myregistry
+
+
+#Depreciated
+#Included for debug
+#Instead use this
+# sudo ansible-playbook -i localhost, /src/ansible/docker-image-build.yml --extra-vars "role_inside_container=foo created_image_name=dockeredfoo created_image_version_tag=0.0.1"
+dockerize:
+  - role_inside_container: foo
+    created_image_name: dockeredfoo
+    created_image_version_tag: asdf2
+    destination_registry: myregistry
+
+    #The --change option will apply Dockerfile instructions to the image that is created.
+    #Supported Dockerfile instructions: CMD|ENTRYPOINT|ENV|EXPOSE|LABEL|ONBUILD|USER|VOLUME|WORKDIR
+    dockerfile_cmd: ''
+    # CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+    # CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+    # CMD command param1 param2 (shell form)
+    dockerfile_entrypoint: ''
+    # ENTRYPOINT ["executable", "param1", "param2"] (exec form, preferred)
+    # ENTRYPOINT command param1 param2 (shell form)
+    dockerfile_env: "ENV foo=bar"
+    # ENV <key>=<value> ...
+    # The ENV instruction sets the environment variable <key> to the value <value>.
+    dockerfile_expose: ''
+    # EXPOSE <port> [<port>...]
+    # The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime.
+    # EXPOSE does not make the ports of the container accessible to the host.
+    # To do that, you must use either the -p flag to publish a range of ports or the -P flag to publish all of the exposed ports.
+    # You can expose one port number and publish it externally under another number.
+    dockerfile_label: ''
+    # LABEL <key>=<value> <key>=<value> <key>=<value>
+    # The LABEL instruction adds metadata to an image.
+    dockerfile_onbuild: ''
+    # ONBUILD [INSTRUCTION]
+    # The ONBUILD instruction adds to the image a trigger instruction to be executed at a later time, when the image is used as the base for another build.
+    dockerfile_user: ''
+    # USER daemon
+    # # The USER instruction sets the user name or UID to use when running the image and for any RUN, CMD and ENTRYPOINT instructions that follow it in the Dockerfile.
+    dockerfile_volume: ''
+    # VOLUME ["/data"]
+    # # The VOLUME instruction creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers
+    dockerfile_workdir: ''
+    # WORKDIR /path/to/workdir
+    # The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile.
+  - role_inside_container: bar
+    created_image_name: barimage
+    created_image_version_tag: changed
+    destination_registry: myregistry
+    dockerfile_cmd: ''
+    dockerfile_entrypoint: ''
+    dockerfile_env: ''
+    dockerfile_expose: ''
+    dockerfile_label: ''
+    dockerfile_onbuild: ''
+    dockerfile_user: ''
+    dockerfile_volume: ''
+    dockerfile_workdir: ''
+
+
+
+
+#
+
+#
+#
+#
+
+#
+#
+#
+#

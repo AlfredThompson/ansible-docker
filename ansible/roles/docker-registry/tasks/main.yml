@@ -1,0 +1,11 @@
+- name: ensure Docker Registry is running
+  docker_container:
+    image: "registry:latest"
+    name: registry
+    ports:
+      - "127.0.0.1:5000:5000"
+    env:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /registry
+    volumes:
+      - registry:/registry:rw
+    restart_policy: always

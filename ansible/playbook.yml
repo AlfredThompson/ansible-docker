@@ -1,0 +1,7 @@
+- name: top level play
+  hosts: localhost
+  connection: local
+  tasks:
+    - include: dockerize.yml
+  vars_files:
+    - dockerize_vars.yml

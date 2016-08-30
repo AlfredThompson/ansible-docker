@@ -1,0 +1,4 @@
+---
+
+- name: Normal Ansible playbook task
+  file: path=/helloworld state=directory
